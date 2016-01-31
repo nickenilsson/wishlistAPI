@@ -10,7 +10,7 @@ class ListsArticlesHandler(web.RequestHandler):
 		self.collection_articles = MongoClient().wishlist.articles
 
 	def get(self, user_id, list_id):
-		articles = self.collection_articles.find({'listID': list_id})
+		articles = list(self.collection_articles.find({'listID': list_id}))
 		mongo_id_helper.stringcast_ids(articles)
 		response = {
 			'articles': articles
