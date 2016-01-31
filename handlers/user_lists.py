@@ -9,10 +9,13 @@ class UserListHandler(web.RequestHandler):
 	def get(self):
 		user_id = str(self.get_argument('userID'))
 
-		items = list(self.mongo_client.wishlist.user.find({'userID' : user_id}, {'_id' : 0}))
+		items = list(self.mongo_client.wishlist.user.find({'userID': user_id}))
+
+		for i in items:
+			i['_id'] = str(i['_id'])
 
 		response = {
-			'wishlist' : items
+			'wishlist': items
 		}
 
 		self.write(response)
