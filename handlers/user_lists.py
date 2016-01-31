@@ -10,7 +10,8 @@ class UserListHandler(web.RequestHandler):
 
 
 	def write_error(self, status_code, **kwargs):
-		self.set_status(**kwargs)
+		self.set_status(status_code)
+		self.write({'Message': kwargs['message']})
 		self.finish()
 
 
@@ -34,10 +35,8 @@ class UserListHandler(web.RequestHandler):
 
 		image_url = self.get_argument('imageUrl', None)
 		if image_url:
-			try:
-				validators.url(image_url)
-			except validators.ValidationFailure, e:
-				self.write_error({'status_code': 400, 'message': 'Invalid url'})
+			if not validators.url(image_url):
+				self.write_error(400, **{'message': 'Invalid image url'})
 
 		wishlist_item = {
 			'userID': self.get_argument('userID'),
