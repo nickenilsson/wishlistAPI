@@ -17,3 +17,13 @@ class UserListHandler(web.RequestHandler):
 
 		self.write(response)
 		self.finish()
+
+
+	def post(self):
+
+		wishlist_item = {
+			'userID': self.get_argument('userID'),
+			'title': self.get_argument('title'),
+			'imageUrl': self.get_argument('imageUrl')
+		}
+		self.mongo_client.wishlist.user.insert(wishlist_item)
