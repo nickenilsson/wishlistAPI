@@ -5,7 +5,7 @@ from tornado import ioloop, web, httpserver
 from handlers.user_lists import UserListHandler
 
 
-define("port", default=8041, help="run on the given port ", type=int)
+define("port", default=80, help="run on the given port ", type=int)
 
 class WishlistApi(web.Application):
     """
