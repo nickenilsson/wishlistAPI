@@ -3,9 +3,9 @@ from pymongo import MongoClient
 import time
 import validators
 
-class UserListHandler(web.RequestHandler):
+class UserHandler(web.RequestHandler):
 	def __init__(self, *args, **kwargs):
-		super(UserListHandler, self).__init__(*args, **kwargs)
+		super(UserHandler, self).__init__(*args, **kwargs)
 		self.mongo_client = MongoClient()
 
 
