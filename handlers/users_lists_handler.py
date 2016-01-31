@@ -7,12 +7,6 @@ class UsersListsHandler(web.RequestHandler):
 		super(UsersListsHandler, self).__init__(*args, **kwargs)
 		self.collection_lists = MongoClient().wishlist.lists
 
-
-	def write_error(self, status_code, **kwargs):
-		self.set_status(status_code)
-		self.write({'Message': kwargs['message']})
-		self.finish()
-
 	def get(self, user_id):
 		lists = self.collection_lists.find({'userID': user_id})
 		mongo_id_helper.stringcast_ids(lists)
