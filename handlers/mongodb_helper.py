@@ -14,7 +14,7 @@ class ListHelper(object):
 		def s_cast_doc(doc):
 			for k,v in doc.items():
 				if k == '_id' or k.endswith('ID'):
-					k[k] = str(v)
+					doc[k] = str(v)
 		if isinstance(docs, list):
 			[s_cast_doc(d) for d in docs]
 		elif isinstance(docs, dict):
@@ -26,7 +26,7 @@ class ListHelper(object):
 		def oid_cast_doc(doc):
 			for k,v in doc.items():
 				if k == '_id' or k.endswith('ID'):
-					d[k] = ObjectId(v)
+					doc[k] = ObjectId(v)
 
 		if isinstance(docs, list):
 			[oid_cast_doc(d) for d in docs]
