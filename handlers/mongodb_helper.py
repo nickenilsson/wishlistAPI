@@ -29,8 +29,8 @@ class ListHelper(object):
 
 
 	def get_lists(self, user_id, size=10):
-		query = self.objectid_cast_ids({'userID':user_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client[self.COLLECTION_LISTS].find(query, {}, limit=size)]
+		query = self.objectid_cast_ids({'userID': user_id})
+		return [self.stringcast_ids(d) for d in self.mongo_client[self.COLLECTION_LISTS].find(query, limit=size)]
 
 
 	def insert_list(self, user_id, title, description=None, image_url=None):
