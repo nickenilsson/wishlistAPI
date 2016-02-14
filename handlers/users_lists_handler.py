@@ -1,27 +1,32 @@
-from tornado import web
+from tornado import web, gen
 from pymongo import MongoClient
-import mongo_id_helper
+import mongodb_helper
+from base_handler import BaseHandler
 
-class UsersListsHandler(web.RequestHandler):
+
+
+class UsersListsHandler(BaseHandler):
+
+
 	def __init__(self, *args, **kwargs):
 		super(UsersListsHandler, self).__init__(*args, **kwargs)
-		self.collection_lists = MongoClient().wishlist.lists
+
 
 	def get(self, user_id):
-		lists = list(self.collection_lists.find({'userID': user_id}))
-		mongo_id_helper.stringcast_ids(lists)
+		lists = self.list_helper.get_lists(user_id, size=10)
 		response = {
 			'lists': lists
 		}
 		self.write(response)
 		self.finish()
 
+
 	def post(self, user_id):
 		title = self.get_argument('title')
-		list_doc = {
-			'userID': user_id,
-			'title': title
-		}
-		self.collection_lists.insert(list_doc)
+		description = self.get_argument('description', None)
+		image_url = self.get_argument('imageUrl', None)
+
+		self.list_helper.insert_list(user_id=user_id, title=title, description=description, image_url=image_url)
+
 		self.finish()
 
