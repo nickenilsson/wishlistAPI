@@ -33,6 +33,6 @@ class ListsArticlesHandler(BaseHandler):
 			'imageUrl': image_url
 		}
 		mongodb_helper.insert(article_doc, self.collection_articles)
-
+		self.finish()
 
 		pass
