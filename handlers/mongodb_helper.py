@@ -11,20 +11,27 @@ class ListHelper(object):
 
 
 	def stringcast_ids(self, docs):
-		docs = [docs] if isinstance(docs, dict) else docs
-		for d in docs:
-			for k,v in d.items():
+		def s_cast_doc(doc):
+			for k,v in doc.items():
 				if k == '_id' or k.endswith('ID'):
 					k[k] = str(v)
+		if isinstance(docs, list):
+			[s_cast_doc(d) for d in docs]
+		elif isinstance(docs, dict):
+			s_cast_doc(docs)
 		return docs
 
 
 	def objectid_cast_ids(self, docs):
-		docs = [docs] if isinstance(docs, dict) else docs
-		for d in docs:
-			for k, v in d.items():
+		def oid_cast_doc(doc):
+			for k,v in doc.items():
 				if k == '_id' or k.endswith('ID'):
 					d[k] = ObjectId(v)
+
+		if isinstance(docs, list):
+			[oid_cast_doc(d) for d in docs]
+		elif isinstance(docs, dict):
+			oid_cast_doc(docs)
 		return docs
 
 
