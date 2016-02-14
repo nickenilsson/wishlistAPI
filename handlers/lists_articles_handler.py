@@ -1,17 +1,12 @@
-from tornado import web
-from pymongo import MongoClient
-import mongodb_helper
-from bson.objectid import ObjectId
 from base_handler import BaseHandler
 
 class ListsArticlesHandler(BaseHandler):
+
 	def __init__(self, *args, **kwargs):
 		super(ListsArticlesHandler, self).__init__(*args, **kwargs)
-		self.collection_articles = MongoClient().wishlist.articles
 
 
 	def get(self, user_id, list_id):
-
 		articles = self.list_helper.get_articles_in_list(list_id)
 		response = {
 			'articles': articles

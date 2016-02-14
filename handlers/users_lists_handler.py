@@ -1,19 +1,15 @@
-from tornado import web, gen
-from pymongo import MongoClient
-import mongodb_helper
 from base_handler import BaseHandler
 
-
-
 class UsersListsHandler(BaseHandler):
-
 
 	def __init__(self, *args, **kwargs):
 		super(UsersListsHandler, self).__init__(*args, **kwargs)
 
 
 	def get(self, user_id):
-		lists = self.list_helper.get_lists(user_id, size=10)
+		size = self.get_argument('size', 10)
+
+		lists = self.list_helper.get_lists(user_id, size=size)
 		response = {
 			'lists': lists
 		}
