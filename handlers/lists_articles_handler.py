@@ -25,14 +25,7 @@ class ListsArticlesHandler(BaseHandler):
 		description = self.get_argument('description', None)
 		image_url = self.get_argument('imageUrl')
 
-		article_doc = {
-			'userID': user_id,
-			'listID': list_id,
-			'title': title,
-			'description': description,
-			'imageUrl': image_url
-		}
-		mongodb_helper.insert(article_doc, self.collection_articles)
+		self.list_helper.insert_article(user_id, list_id, title=title, description=description, image_url=image_url)
 		self.finish()
 
 		pass
