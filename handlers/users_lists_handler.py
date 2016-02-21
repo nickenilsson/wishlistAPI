@@ -11,6 +11,7 @@ class UsersListsHandler(BaseHandler):
 		size = self.get_argument('size', 10)
 
 		lists = self.db_helper.get_users_lists(user_id, start=start, size=size)
+		print lists
 		response = {
 			'lists': lists
 		}

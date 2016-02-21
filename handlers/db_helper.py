@@ -44,8 +44,7 @@ class DBHelper(object):
 
 	def get_users_lists(self, user_id, start=0, size=10):
 		query = self.objectid_cast_ids({'userID': user_id})
-		proj = {'collection': {'$slice': [start, size]}}
-		return [self.stringcast_ids(d) for d in self.mongo_client.users.find(query, proj, limit=size)]
+		return [self.stringcast_ids(d) for d in self.mongo_client.users.find(query)]
 
 
 	def create_list(self, user_id, title, description=None, image_url=None):
