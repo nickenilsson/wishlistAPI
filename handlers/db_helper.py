@@ -47,7 +47,7 @@ class DBHelper(object):
 		return [self.stringcast_ids(d) for d in self.mongo_client.lists.find(query)]
 
 
-	def create_list(self, user_id, title, description=None, image_url=None):
+	def create_list(self, user_id, title, description='', image_url=''):
 		doc = {
 			'userID': user_id,
 			'title': title,
@@ -69,9 +69,8 @@ class DBHelper(object):
 		return [self.stringcast_ids(d) for d in self.mongo_client.articles.find(query, limit=size)]
 
 
-	def insert_article(self, user_id, list_id, title, description=None, image_url=None):
+	def insert_article(self, list_id, title, description='', image_url=''):
 		article = self.objectid_cast_ids({
-			'userID': user_id,
 			'listID': list_id,
 			'title': title,
 			'description': description,

@@ -21,8 +21,8 @@ class UsersListsHandler(BaseHandler):
 
 	def post(self, user_id):
 		title = self.get_argument('title')
-		description = self.get_argument('description', None)
-		image_url = self.get_argument('imageUrl', None)
+		description = self.get_argument('description', '')
+		image_url = self.get_argument('imageUrl', '')
 
 		self.db_helper.create_list(user_id=user_id, title=title, description=description, image_url=image_url)
 
