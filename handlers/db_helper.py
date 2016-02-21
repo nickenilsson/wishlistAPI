@@ -2,12 +2,10 @@
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
-class ListHelper(object):
+class DBHelper(object):
 
 	def __init__(self, host):
 		self.mongo_client = MongoClient(host).wishlist
-		self.COLLECTION_LISTS = "lists"
-		self.COLLECTION_ARTICLES = "articles"
 
 
 	def stringcast_ids(self, docs):
@@ -35,12 +33,22 @@ class ListHelper(object):
 		return docs
 
 
-	def get_lists(self, user_id, size=10):
+	def create_user(self, user_id, username):
+		pass
+
+
+	def get_user(self, user_id):
+		query = self.objectid_cast_ids({'_id': user_id})
+		return self.stringcast_ids(self.mongo_client.users.find_one(query))
+
+
+	def get_users_lists(self, user_id, start=0, size=10):
 		query = self.objectid_cast_ids({'userID': user_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client[self.COLLECTION_LISTS].find(query, limit=size)]
+		proj = {'collection': {'$slice': [start, size]}}
+		return [self.stringcast_ids(d) for d in self.mongo_client.users.find(query, proj, limit=size)]
 
 
-	def insert_list(self, user_id, title, description=None, image_url=None):
+	def create_list(self, user_id, title, description=None, image_url=None):
 		doc = {
 			'userID': user_id,
 			'title': title,
@@ -48,12 +56,18 @@ class ListHelper(object):
 			'imageUrl': image_url
 		}
 		self.objectid_cast_ids(doc)
-		return self.mongo_client[self.COLLECTION_LISTS].insert(doc)
+		return self.mongo_client.lists.insert(doc)
 
 
-	def get_articles_in_list(self, list_id, size=10):
+	def save_list(self, user_id, list_id):
+		r_query = self.objectid_cast_ids({'_id': user_id})
+		w_query = self.objectid_cast_ids({'$push': {'lists': list_id}})
+		self.mongo_client.update(r_query, w_query)
+
+
+	def get_list_contents(self, list_id, size=10):
 		query = self.objectid_cast_ids({'listID': list_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client[self.COLLECTION_ARTICLES].find(query, limit=size)]
+		return [self.stringcast_ids(d) for d in self.mongo_client.articles.find(query, limit=size)]
 
 
 	def insert_article(self, user_id, list_id, title, description=None, image_url=None):
@@ -64,4 +78,9 @@ class ListHelper(object):
 			'description': description,
 			'imageUrl': image_url
 		})
-		return self.mongo_client[self.COLLECTION_ARTICLES].insert(article)
+		return self.mongo_client.articles.insert(article)
+
+
+	def get_article_contents(self, article_id):
+		query = self.objectid_cast_ids({'_id': article_id})
+		return [self.stringcast_ids(d) for d in self.mongo_client.find(query)]

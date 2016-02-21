@@ -17,8 +17,11 @@ class WishlistApi(web.Application):
 	def __init__(self):
 		web.Application.__init__(self,
 								 [
-									 (r"/users/([A-Za-z0-9_]*)/lists/?", UsersListsHandler),
-									 (r"/users/([A-Za-z0-9_]*)/lists/([A-Za-z0-9_]*)/articles/?", ListsArticlesHandler)
+									#(r"/users/([A-Za-z0-9_]*)?", UsersHandler),
+									(r"/users/([A-Za-z0-9_]*)/lists/?", UsersListsHandler),
+									#(r"/lists/([A-Za-z0-9_]*)?", ListsHandler),
+									(r"/lists/([A-Za-z0-9_]*)/articles/?", ListsArticlesHandler),
+									#(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
 								 ],
 								 autoreload=True)
 

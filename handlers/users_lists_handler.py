@@ -7,9 +7,10 @@ class UsersListsHandler(BaseHandler):
 
 
 	def get(self, user_id):
+		start = self.get_argument('start', 0)
 		size = self.get_argument('size', 10)
 
-		lists = self.list_helper.get_lists(user_id, size=size)
+		lists = self.db_helper.get_users_lists(user_id, start=start, size=size)
 		response = {
 			'lists': lists
 		}
@@ -22,7 +23,7 @@ class UsersListsHandler(BaseHandler):
 		description = self.get_argument('description', None)
 		image_url = self.get_argument('imageUrl', None)
 
-		self.list_helper.insert_list(user_id=user_id, title=title, description=description, image_url=image_url)
+		self.db_helper.create_list(user_id=user_id, title=title, description=description, image_url=image_url)
 
 		self.finish()
 

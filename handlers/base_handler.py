@@ -1,12 +1,12 @@
 from tornado import web
-import mongodb_helper
+import db_helper
 
 class BaseHandler(web.RequestHandler):
 
 
 	def __init__(self, *args, **kwargs):
 		super(BaseHandler, self).__init__(*args, **kwargs)
-		self.list_helper = mongodb_helper.ListHelper('localhost')
+		self.db_helper = db_helper.DBHelper('mongodb')
 
 	def display_error(self, status_code, message):
 		self.set_status(status_code)
