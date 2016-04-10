@@ -34,7 +34,7 @@ class UsersWishlistsHandler(BaseHandler):
         name = self.get_argument('name')
         description = self.get_argument('description', '')
         image_url = self.get_argument('imageUrl', '')
-        wlist = WishList(name=name, description=description, image_url=image_url, author=user['_id'])
+        wlist = WishList(name=name, description=description, image_url=image_url, _author_id=user['_id'])
         self.db_helper.create_wishlist(user_id=ObjectId(user['_id']), wishlist=wlist)
         self.finish()
 
