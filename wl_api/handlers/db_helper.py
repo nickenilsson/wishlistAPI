@@ -17,7 +17,8 @@ class DBHelper(object):
             for k, v in doc.items():
                 if k.startswith('_'):
                     doc[k] = ObjectId(v) if not isinstance(v, ObjectId) else v
-                self._fix_doc_before_insert(v)
+                else:
+                    self._fix_doc_before_insert(v)
         elif isinstance(doc, list):
             for i in doc:
                 self._fix_doc_before_insert(i)
@@ -26,6 +27,7 @@ class DBHelper(object):
     def _fix_doc_after_read(self, doc):
 
         if isinstance(doc, dict):
+
             for k, v in doc.items():
                 if isinstance(v, ObjectId) or k.startswith('_'):
                     doc[k] = str(v)
@@ -36,7 +38,7 @@ class DBHelper(object):
                 if isinstance(doc[i], ObjectId):
                     doc[i] = str(doc[i])
                 else:
-                    self._fix_doc_after_read(i)
+                    self._fix_doc_after_read(doc[i])
         return doc
 
 
