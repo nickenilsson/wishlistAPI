@@ -78,6 +78,6 @@ class DBHelper(object):
 
     def get_wishlist(self, wish_list_id):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
-        doc = self.mongo_client.wishlists.find({'_id': wish_list_id})
+        doc = self.mongo_client.wishlists.find_one({'_id': wish_list_id})
         wish_list = WishList(**self._fix_doc_after_read(doc))
         return wish_list
