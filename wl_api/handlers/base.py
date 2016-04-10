@@ -10,7 +10,6 @@ class BaseHandler(web.RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseHandler, self).__init__(*args, **kwargs)
         self.db_helper = db_helper.DBHelper('mongo.aws')
-        self.mongo_db = MongoClient('mongo.aws').wishlist
 
     def get_current_user(self):
         cookie_user_fb = self.get_secure_cookie('user')
