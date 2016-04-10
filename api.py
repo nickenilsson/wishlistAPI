@@ -2,37 +2,41 @@ import tornado
 from tornado.options import define, options
 from tornado import ioloop, web, httpserver
 
-from handlers.users_lists_handler import UsersListsHandler
-from handlers.lists_articles_handler import ListsArticlesHandler
-
+from handlers.users_wishlists import UsersWishlistsHandler
+from handlers.users import UsersHandler
+from handlers.login import FacebookGraphLoginHandler
+from handlers.authentication import AuthenticationHandler
+import settings
 
 define("port", default=8080, help="run on the given port ", type=int)
 
-
 class WishlistApi(web.Application):
-	"""
-		Defines the tornado services
-	"""
 
-	def __init__(self):
-		web.Application.__init__(self,
-								 [
-									#(r"/users/([A-Za-z0-9_]*)?", UsersHandler),
-									(r"/users/([A-Za-z0-9_]*)/lists/?", UsersListsHandler),
-									#(r"/lists/([A-Za-z0-9_]*)?", ListsHandler),
-									(r"/lists/([A-Za-z0-9_]*)/articles/?", ListsArticlesHandler),
-									#(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
-								 ],
-								 autoreload=True)
+    def __init__(self):
+        web.Application.__init__(self,
+
+                                 [
+                                     (r"/users/authenticate/?", AuthenticationHandler),
+                                     (r"/login/?", FacebookGraphLoginHandler),
+                                     (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
+                                     (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
+                                     #(r"/lists/([A-Za-z0-9_]*)?", ListsHandler),
+                                     #(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
+                                 ],
+                                 autoreload=True,
+                                 **settings.settings
+
+
+        )
 
 
 def start(port):
-	application = WishlistApi()
-	http_server = httpserver.HTTPServer(application)
-	http_server.listen(port)
-	ioloop.IOLoop.instance().start()
+    application = WishlistApi()
+    http_server = httpserver.HTTPServer(application)
+    http_server.listen(port)
+    ioloop.IOLoop.instance().start()
 
 
 if __name__ == "__main__":
-	tornado.options.parse_command_line()
-	start(options.port)
+    tornado.options.parse_command_line()
+    start(options.port)

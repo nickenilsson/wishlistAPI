@@ -1,84 +1,69 @@
 
-from bson.objectid import ObjectId
 from pymongo import MongoClient
+from bson.objectid import ObjectId
+from wishlistAPI.models import User, WishList
 
 class DBHelper(object):
 
-	def __init__(self, host):
-		self.mongo_client = MongoClient(host).wishlist
+    def __init__(self, host):
+        self.mongo_client = MongoClient(host).wishlist
 
 
-	def stringcast_ids(self, docs):
-		def s_cast_doc(doc):
-			for k,v in doc.items():
-				if k == '_id' or k.endswith('ID'):
-					doc[k] = str(v)
-		if isinstance(docs, list):
-			[s_cast_doc(d) for d in docs]
-		elif isinstance(docs, dict):
-			s_cast_doc(docs)
-		return docs
+    def _fix_doc_before_insert(self, doc):
+        if isinstance(doc, dict):
+            for k, v in doc.items():
+                if k.startswith('_'):
+                    doc[k] = ObjectId(v) if not isinstance(v, ObjectId) else v
+                self._fix_doc_before_insert(v)
+        elif isinstance(doc, list):
+            for i in doc:
+                self._fix_doc_before_insert(i)
+        return doc
+
+    def _fix_doc_after_read(self, doc):
+        if isinstance(doc, dict):
+            for k, v in doc.items():
+                if isinstance(v, ObjectId):
+                    doc[k] = str(v)
+                else:
+                    self._fix_doc_after_read(v)
+        elif isinstance(doc, list):
+            for i in doc:
+                self._fix_doc_after_read(i)
+        return doc
 
 
-	def objectid_cast_ids(self, docs):
-		def oid_cast_doc(doc):
-			for k,v in doc.items():
-				if k == '_id' or k.endswith('ID'):
-					doc[k] = ObjectId(v)
 
-		if isinstance(docs, list):
-			[oid_cast_doc(d) for d in docs]
-		elif isinstance(docs, dict):
-			oid_cast_doc(docs)
-		return docs
+    def save_user(self, user):
+        user['wishlists'] = [] if not user.get('wishlists') else user['wishlists']
+        prepared_doc = self._fix_doc_before_insert(user.store)
+
+        return self.mongo_client.users.insert(prepared_doc)
 
 
-	def create_user(self, user_id, username):
-		pass
+    def get_user(self, user_id):
+        user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+        result = self.mongo_client.users.find_one({'_id': user_id})
+        if result:
+            user_data = self._fix_doc_after_read(result)
+            return User(**user_data)
+
+    def get_user_by_fb_id(self, fb_id):
+        result = self.mongo_client.users.find_one({'facebook_id': fb_id})
+        if result:
+            user_data = self._fix_doc_after_read(result)
+            return User(**user_data)
 
 
-	def get_user(self, user_id):
-		query = self.objectid_cast_ids({'_id': user_id})
-		return self.stringcast_ids(self.mongo_client.users.find_one(query))
+    def get_users_wishlists(self, user_id, start=0, size=10):
+        user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+        list_ids = self.mongo_client.users.find_one({'_id': user_id}, {'wishlists': {'$slice': [start, size]}})['wishlists']
+
+        return map(self._fix_doc_after_read, self.mongo_client.wishlists.find({'_id': {'$in': list_ids}}))
 
 
-	def get_users_lists(self, user_id, start=0, size=10):
-		query = self.objectid_cast_ids({'userID': user_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client.lists.find(query)]
-
-
-	def create_list(self, user_id, title, description='', image_url=''):
-		doc = {
-			'userID': user_id,
-			'title': title,
-			'description': description,
-			'imageUrl': image_url
-		}
-		self.objectid_cast_ids(doc)
-		return self.mongo_client.lists.insert(doc)
-
-
-	def save_list(self, user_id, list_id):
-		r_query = self.objectid_cast_ids({'_id': user_id})
-		w_query = self.objectid_cast_ids({'$push': {'lists': list_id}})
-		self.mongo_client.update(r_query, w_query)
-
-
-	def get_list_contents(self, list_id, size=10):
-		query = self.objectid_cast_ids({'listID': list_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client.articles.find(query, limit=size)]
-
-
-	def insert_article(self, list_id, title, description='', image_url=''):
-		article = self.objectid_cast_ids({
-			'listID': list_id,
-			'title': title,
-			'description': description,
-			'imageUrl': image_url
-		})
-		return self.mongo_client.articles.insert(article)
-
-
-	def get_article_contents(self, article_id):
-		query = self.objectid_cast_ids({'_id': article_id})
-		return [self.stringcast_ids(d) for d in self.mongo_client.find(query)]
+    def create_wishlist(self, user_id, wishlist):
+        wishlist['articles'] = [] if not wishlist.get('articles') else wishlist['articles']
+        user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+        wishlist_id = self.mongo_client.wishlists.insert(self._fix_doc_before_insert(wishlist.store))
+        self.mongo_client.users.update({'_id': ObjectId(user_id)}, {'$push': {'wishlists': wishlist_id}})
