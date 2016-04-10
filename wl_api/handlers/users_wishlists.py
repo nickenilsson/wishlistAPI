@@ -8,9 +8,6 @@ from wl_api.models import WishList
 
 class UsersWishlistsHandler(BaseHandler):
 
-    def __init__(self, *args, **kwargs):
-        super(UsersWishlistsHandler, self).__init__(*args, **kwargs)
-
     @tornado.web.authenticated
     def get(self, user_id):
         if user_id.lower() == 'me':
@@ -25,7 +22,7 @@ class UsersWishlistsHandler(BaseHandler):
         self.write({'response': wlists})
         self.finish()
 
-    #@tornado.web.authenticated
+    @tornado.web.authenticated
     def post(self, user_id):
         if not user_id == 'me':
             raise tornado.web.HTTPError(500, "User can only post lists to his/her own account. Like: /users/me/wishlists")

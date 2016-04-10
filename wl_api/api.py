@@ -4,7 +4,6 @@ from tornado import ioloop, web, httpserver
 
 from handlers.users_wishlists import UsersWishlistsHandler
 from handlers.users import UsersHandler
-from handlers.login import FacebookGraphLoginHandler
 from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api import settings
 
