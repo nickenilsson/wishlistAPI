@@ -20,7 +20,7 @@ class WishlistApi(web.Application):
                                      (r"/users/authenticate/?", AuthenticationHandler),
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
-                                     (r"/wishlists/([A-Za-z0-9_]*)/articles/?", WishlistArticlesHandler),
+                                     (r"/wishlists/([A-Za-z0-9_]*)/?", WishlistArticlesHandler),
                                      #(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
                                  ],
                                  autoreload=True,

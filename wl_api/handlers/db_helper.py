@@ -76,9 +76,8 @@ class DBHelper(object):
         self.mongo_client.users.update({'_id': ObjectId(user_id)}, {'$push': {'wishlists': wishlist_id}})
 
 
-    def get_wishlist(self, wishlist_id):
-        wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
-        doc = self.mongo_client.wishlists.find({'_id': wishlist_id})
-        wishlist = Wishlist(**self._fix_doc_after_read(doc))
-
-        return wishlist
+    def get_wishlist(self, wish_list_id):
+        wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
+        doc = self.mongo_client.wishlists.find({'_id': wish_list_id})
+        wish_list = WishList(**self._fix_doc_after_read(doc))
+        return wish_list
