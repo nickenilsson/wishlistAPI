@@ -70,7 +70,7 @@ class Article(TransformedDict):
             'name',
             'created_at',
             'description',
-            'imageUrl',
+            'image_url',
             'status'
         }
         super(Article, self).__init__(*args, **kwargs)
