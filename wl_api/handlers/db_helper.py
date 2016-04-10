@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 from wl_api.models import User, WishList
-import tornado
+import tornado.web
 
 
 class DBHelper(object):
@@ -87,9 +87,12 @@ class DBHelper(object):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         article = self._fix_doc_before_insert(article.store)
-        print wish_list_id
-        print user_id
-        result = self.mongo_client.wishlist.update({'_id': wish_list_id, 'author_id': user_id}, {'$push': {'articles': article}})
-        if not result['updatedExisting']:
-            raise tornado.HTTPError(405, 'You can only add articles to lists that you created')
+        article['_id'] = ObjectId()
+
+        query = {'_id': wish_list_id, '_author_id':user_id}
+
+        result = self.mongo_client.wishlists.update_one(query, {'$push': {'articles': article}})
+        print result
+        #if not result['updatedExisting']:
+        #    raise tornado.web.HTTPError(405, 'You can only add articles to lists that you created')
         return result
