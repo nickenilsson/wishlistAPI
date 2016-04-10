@@ -14,8 +14,12 @@ class UsersWishlistsHandler(BaseHandler):
             user = self.get_current_user()
             user_id = user['_id']
 
-        start = self.get_argument('start', 0)
+        page = self.get_argument('page', 1)
+        if page < 1:
+            raise tornado.HTTPError('Page number must be larger than zero')
         size = self.get_argument('size', 10)
+        start = page - 1 * size
+
 
         wlists = self.db_helper.get_users_wishlists(user_id, start, size)
 
