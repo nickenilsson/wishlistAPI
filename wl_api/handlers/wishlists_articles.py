@@ -29,7 +29,6 @@ class WishlistArticlesHandler(BaseHandler):
         self.finish()
 
 
-
     @tornado.web.authenticated
     def post(self):
         pass
