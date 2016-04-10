@@ -18,7 +18,15 @@ class WishlistArticlesHandler(BaseHandler):
 
         wishlist = self.db_helper.get_wishlist(wishlist_id)
 
-        self.write({'response': wishlist.store})
+        user = self.get_current_user()
+
+        self.write({
+            'response': {
+                'wishlist': wishlist.store,
+                'is_owner': wishlist['_author_id'] == user['_id']
+            }
+        })
+        self.finish()
 
 
 
