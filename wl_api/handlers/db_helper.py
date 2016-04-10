@@ -87,6 +87,8 @@ class DBHelper(object):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         article = self._fix_doc_before_insert(article.store)
+        print wish_list_id
+        print user_id
         result = self.mongo_client.wishlist.update({'_id': wish_list_id, 'author_id': user_id}, {'$push': {'articles': article}})
         if not result['updatedExisting']:
             raise tornado.HTTPError(405, 'You can only add articles to lists that you created')
