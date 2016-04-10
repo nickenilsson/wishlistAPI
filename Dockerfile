@@ -9,5 +9,8 @@ ADD requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
 COPY . /code
+RUN pip install -e /code
+EXPOSE 8080
 
-CMD ["python", "code/api.py"]
+
+CMD ["python", "code/wl_api/api.py"]
