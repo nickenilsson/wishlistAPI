@@ -7,7 +7,7 @@ from wl_api.models import User
 
 class DBHelper(object):
 
-    def __init__(self, host):
+    def __init__(self, host='localhost'):
         self.mongo_client = MongoClient(host).wishlist
 
 
