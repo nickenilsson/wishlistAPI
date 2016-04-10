@@ -8,14 +8,17 @@ class UsersHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, user_id):
 
-        start = self.get_argument('start', 0)
-        size = self.get_argument('size', 10)
+        page = self.get_argument('start', 1)
+        if page < 1:
+            raise tornado.HTTPError('Page cannot be less that 1')
+        size = self.get_argument('size', 200)
+        start = (page - 1) * size
+
         if user_id == 'me':
             user = self.get_current_user()
         else:
             user = None
         wishlists = self.db_helper.get_users_wishlists(user['_id'], start, size)
-        print "wishlists: ", wishlists
         user['wishlists'] = wishlists
         self.write({'response': {'user': user.store}})
 

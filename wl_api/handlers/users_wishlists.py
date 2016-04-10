@@ -17,7 +17,7 @@ class UsersWishlistsHandler(BaseHandler):
         page = self.get_argument('page', 1)
         if page < 1:
             raise tornado.HTTPError('Page number must be larger than zero')
-        size = self.get_argument('size', 10)
+        size = self.get_argument('size', 200)
         start = page - 1 * size
 
 
