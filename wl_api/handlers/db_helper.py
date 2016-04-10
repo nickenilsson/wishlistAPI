@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 from bson.objectid import ObjectId
 
-from wl_api.models import User
+from wl_api.models import User, Wishlist
 
 
 class DBHelper(object):
@@ -74,3 +74,11 @@ class DBHelper(object):
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         wishlist_id = self.mongo_client.wishlists.insert(self._fix_doc_before_insert(wishlist.store))
         self.mongo_client.users.update({'_id': ObjectId(user_id)}, {'$push': {'wishlists': wishlist_id}})
+
+
+    def get_wishlist(self, wishlist_id):
+        wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
+        doc = self.mongo_client.wishlists.find({'_id': wishlist_id})
+        wishlist = Wishlist(**self._fix_doc_after_read(doc))
+
+        return wishlist
