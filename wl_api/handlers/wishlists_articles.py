@@ -18,7 +18,7 @@ class WishlistArticlesHandler(BaseHandler):
 
         wishlist = self.db_helper.get_wishlist(wishlist_id)
 
-        self.write({'response': wishlist})
+        self.write({'response': wishlist.store})
 
 
 

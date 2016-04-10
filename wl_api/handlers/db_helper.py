@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 from bson.objectid import ObjectId
 
-from wl_api.models import User, Wishlist
+from wl_api.models import User, WishList
 
 
 class DBHelper(object):
