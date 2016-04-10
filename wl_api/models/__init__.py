@@ -67,9 +67,10 @@ class Article(TransformedDict):
     def __init__(self, *args, **kwargs):
         self.fields = {
             '_id',
-            '_author_id',
             'name',
             'created_at',
-            'description'
+            'description',
+            'imageUrl',
+            'status'
         }
         super(Article, self).__init__(*args, **kwargs)
