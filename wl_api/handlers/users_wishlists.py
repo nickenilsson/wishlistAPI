@@ -25,7 +25,7 @@ class UsersWishlistsHandler(BaseHandler):
         self.write({'response': wlists})
         self.finish()
 
-    @tornado.web.authenticated
+    #@tornado.web.authenticated
     def post(self, user_id):
         if not user_id == 'me':
             raise tornado.web.HTTPError(500, "User can only post lists to his/her own account. Like: /users/me/wishlists")
