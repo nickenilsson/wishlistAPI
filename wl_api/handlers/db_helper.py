@@ -82,6 +82,8 @@ class DBHelper(object):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         doc = self.mongo_client.wishlists.find_one({'_id': wish_list_id})
         wish_list = WishList(**self._fix_doc_after_read(doc))
+        if wish_list['articles']:
+            wish_list['image_url'] = wish_list['articles'][0].get('image_url')
         return wish_list
 
 
