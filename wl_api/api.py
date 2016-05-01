@@ -8,7 +8,7 @@ from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api.handlers.wishlists_articles import WishlistArticlesHandler
 from wl_api.handlers.articles import ArticlesHandler
 from wl_api import settings
-from wl_api.handlers.search_handler_images import SearchImagesHandler
+from wl_api.handlers.search_images import SearchImagesHandler
 
 
 define("port", default=8080, help="run on the given port ", type=int)
@@ -18,7 +18,7 @@ class WishlistApi(web.Application):
     def __init__(self):
         web.Application.__init__(self,
                                  [
-                                     (r"/search/?", SearchImagesHandler),
+                                     (r"/images/search/?", SearchImagesHandler),
                                      (r"/users/authenticate/?", AuthenticationHandler),
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
@@ -34,6 +34,7 @@ class WishlistApi(web.Application):
 
 def start(port):
     application = WishlistApi()
+
     http_server = httpserver.HTTPServer(application)
     http_server.listen(port)
     ioloop.IOLoop.instance().start()

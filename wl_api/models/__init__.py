@@ -75,3 +75,12 @@ class Article(TransformedDict):
             'status'
         }
         super(Article, self).__init__(*args, **kwargs)
+
+
+class Image(TransformedDict):
+
+    def __init__(self, *args, **kwargs):
+        self.fields = {
+            'url'
+        }
+        super(Image, self).__init__(*args, **kwargs)
