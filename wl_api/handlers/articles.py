@@ -1,19 +1,16 @@
+from wl_api.handlers.base import BaseHandler
+import tornado
+
+class ArticlesHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def put(self, article_id):
+        article = self.get_article_from_args()
+        article['_id'] = article_id
+        self.db_helper.update_article(article)
+        self.finish()
 
 
-
-from wishlistAPI.api.api.handlers.base import BaseHandler
-
-
-
-class ArticleHandler(BaseHandler):
-
-
-	def get(self, user_id, list_id, article_id):
-
-
-		pass
-
-	def post(self, user_id, list_id, article_id):
-
-
-		pass
+    @tornado.web.authenticated
+    def delete(self, article_id):
+        pass

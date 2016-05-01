@@ -6,7 +6,9 @@ from handlers.users_wishlists import UsersWishlistsHandler
 from handlers.users import UsersHandler
 from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api.handlers.wishlists_articles import WishlistArticlesHandler
+from wl_api.handlers.articles import ArticlesHandler
 from wl_api import settings
+from wl_api.handlers.search_handler_images import SearchImagesHandler
 
 
 define("port", default=8080, help="run on the given port ", type=int)
@@ -15,13 +17,13 @@ class WishlistApi(web.Application):
 
     def __init__(self):
         web.Application.__init__(self,
-
                                  [
+                                     (r"/search/?", SearchImagesHandler),
                                      (r"/users/authenticate/?", AuthenticationHandler),
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
                                      (r"/wishlists/([A-Za-z0-9_]*)/articles/?", WishlistArticlesHandler),
-                                     #(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
+                                     (r"/articles/([A-Za-z0-9_]*)/?", ArticlesHandler)
                                  ],
                                  autoreload=True,
                                  **settings.settings

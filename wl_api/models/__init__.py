@@ -1,5 +1,6 @@
 import collections
 
+
 class TransformedDict(collections.MutableMapping):
     """A dictionary that applies an arbitrary key-altering
        function before accessing the keys"""
@@ -42,7 +43,7 @@ class User(TransformedDict):
             'email',
             'image_url',
             'facebook_id',
-            'created_at',
+            'last_modified',
             'wishlists'
         }
         super(User, self).__init__(*args, **kwargs)
@@ -56,7 +57,7 @@ class WishList(TransformedDict):
             'image_url',
             'description',
             'name',
-            'created_at',
+            'last_modified',
             'articles'
         }
         super(WishList, self).__init__(*args, **kwargs)
@@ -68,7 +69,7 @@ class Article(TransformedDict):
         self.fields = {
             '_id',
             'name',
-            'created_at',
+            'last_modified',
             'description',
             'image_url',
             'status'

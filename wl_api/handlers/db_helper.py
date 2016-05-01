@@ -6,6 +6,7 @@ from wl_api.models import User, WishList
 import tornado.web
 
 
+
 class DBHelper(object):
 
     def __init__(self, host='localhost'):
@@ -25,11 +26,9 @@ class DBHelper(object):
         return doc
 
     def _fix_doc_after_read(self, doc):
-
         if isinstance(doc, dict):
-
             for k, v in doc.items():
-                if isinstance(v, ObjectId) or k.startswith('_'):
+                if isinstance(v, ObjectId):
                     doc[k] = str(v)
                 else:
                     self._fix_doc_after_read(v)
@@ -85,6 +84,12 @@ class DBHelper(object):
         wish_list = WishList(**self._fix_doc_after_read(doc))
         return wish_list
 
+
+    def update_wishlist(self, wishlist):
+        wishlist_doc = self._fix_doc_before_insert(wishlist.store)
+        return self.mongo_client.wishlists.update_one({'_id':wishlist_doc['_id']}, {'$set': wishlist_doc})
+
+
     def add_article_to_list(self, article, user_id, wish_list_id):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
@@ -94,7 +99,14 @@ class DBHelper(object):
         query = {'_id': wish_list_id, '_author_id':user_id}
 
         result = self.mongo_client.wishlists.update_one(query, {'$push': {'articles': article}})
-        print result
-        #if not result['updatedExisting']:
-        #    raise tornado.web.HTTPError(405, 'You can only add articles to lists that you created')
         return result
+
+
+    def update_article(self, article):
+        article = self._fix_doc_before_insert(article.store)
+        return self.mongo_client.wishlists.update_one( {'articles._id':article['_id']},
+                                                {'$set':{'articles.$.{0}'.format(k):v for k, v in article.items()}})
+
+    def delete_article(self, article_id):
+        article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
+        return self.mongo_client.wishlists.update_one({'articles._id': article_id}, {'$pull': {'_id': article_id}})

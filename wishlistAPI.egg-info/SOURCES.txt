@@ -15,4 +15,5 @@ wl_api/handlers/db_helper.py
 wl_api/handlers/login.py
 wl_api/handlers/users.py
 wl_api/handlers/users_wishlists.py
+wl_api/handlers/wishlists_articles.py
 wl_api/models/__init__.py
