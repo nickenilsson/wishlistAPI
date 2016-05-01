@@ -42,12 +42,17 @@ class DBHelper(object):
 
 
 
+    def set_image_for_wishlist(self, wish_list):
+        if wish_list['articles']:
+            wish_list['image_url'] = wish_list['articles'][0].get('image_url', '')
+        return wish_list
+
+
     def save_user(self, user):
         user['wishlists'] = [] if not user.get('wishlists') else user['wishlists']
         prepared_doc = self._fix_doc_before_insert(user.store)
 
         return self.mongo_client.users.insert(prepared_doc)
-
 
     def get_user(self, user_id):
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
@@ -66,9 +71,7 @@ class DBHelper(object):
     def get_users_wishlists(self, user_id, start=0, size=10):
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         list_ids = self.mongo_client.users.find_one({'_id': user_id}, {'wishlists': {'$slice': [start, size]}})['wishlists']
-
-        wishlists = map(self._fix_doc_after_read, self.mongo_client.wishlists.find({'_id': {'$in': list_ids}}))
-
+        wishlists = map(self.set_image_for_wishlist, map(self._fix_doc_after_read, self.mongo_client.wishlists.find({'_id': {'$in': list_ids}})))
         return wishlists
 
     def create_wishlist(self, user_id, wishlist):
@@ -84,6 +87,7 @@ class DBHelper(object):
         wish_list = WishList(**self._fix_doc_after_read(doc))
         if wish_list['articles']:
             wish_list['image_url'] = wish_list['articles'][0].get('image_url')
+        self.set_image_for_wishlist(wish_list)
         return wish_list
 
 
