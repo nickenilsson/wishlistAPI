@@ -4,6 +4,7 @@ import tornado
 
 from wl_api.handlers.base import BaseHandler
 from wl_api.models import Article
+from bson import ObjectId
 
 
 class WishlistArticlesHandler(BaseHandler):
@@ -32,7 +33,12 @@ class WishlistArticlesHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self, wishlist_id):
+
+        if not ObjectId.is_valid(wishlist_id):
+            raise tornado.web.HTTPError(400, 'Invalid ObjectId')
         user = self.get_current_user()
         article = self.get_article_from_args()
+
         self.db_helper.add_article_to_list(article, user['_id'], wishlist_id)
+
         self.finish()

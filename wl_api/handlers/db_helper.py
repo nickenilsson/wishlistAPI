@@ -41,7 +41,6 @@ class DBHelper(object):
         return doc
 
 
-
     def set_image_for_wishlist(self, wish_list):
         if wish_list['articles']:
             wish_list['image_url'] = wish_list['articles'][0].get('image_url', '')
@@ -107,12 +106,23 @@ class DBHelper(object):
         result = self.mongo_client.wishlists.update_one(query, {'$push': {'articles': article}})
         return result
 
-
+    #TODO: Make sure that only the author can edit articles
     def update_article(self, article):
         article = self._fix_doc_before_insert(article.store)
         return self.mongo_client.wishlists.update_one( {'articles._id':article['_id']},
                                                 {'$set':{'articles.$.{0}'.format(k):v for k, v in article.items()}})
 
+
     def delete_article(self, article_id):
         article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
         return self.mongo_client.wishlists.update_one({'articles._id': article_id}, {'$pull': {'_id': article_id}})
+
+    def delete_wishlist(self, wish_list_id, user_id):
+        wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
+        user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+        self.mongo_client.wishlists.remove({'_id': wish_list_id, '_author_id': user_id})
+        pass
+
+    def delete_wishlist_from_all_users(self, wishlist_id):
+
+        pass
