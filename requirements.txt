@@ -2,4 +2,6 @@ tornado
 pymongo
 validators
 celery
+rq
+redis
 

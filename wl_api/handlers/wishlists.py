@@ -14,7 +14,7 @@ class WishlistsHandler(BaseHandler):
         self.finish()
 
 
-
+    @tornado.web.authenticated
     def put(self, wishlist_id, wishlist):
         wishlist = self.get_wishlist_from_args()
         self.db_helper.update_wishlist(wishlist_id, wishlist)
@@ -22,7 +22,8 @@ class WishlistsHandler(BaseHandler):
 
 
     @tornado.web.authenticated
-    def delete(self, wishlist):
+    def delete(self, wishlist_id):
         user = self.get_current_user()
+        self.db_helper.delete_wishlist(wishlist_id, user['_id'])
 
 

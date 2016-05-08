@@ -5,7 +5,8 @@ from bson.objectid import ObjectId
 from wl_api.models import User, WishList
 import tornado.web
 from wl_api.celery_app import celery_app
-
+from redis import Redis
+from rq import Queue
 
 class DBHelper(object):
 
@@ -114,20 +115,20 @@ class DBHelper(object):
 
     def delete_article(self, article_id):
         article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
-        return self.mongo_client.wishlists.update_one({'articles._id': article_id}, {'$pull': {'_id': article_id}})
+        return self.mongo_client.wishlists.update_one({'articles._id': article_id}, {'$pull': {'articles':{'_id': article_id}}})
 
 
     def delete_wishlist(self, wish_list_id, user_id):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         self.mongo_client.wishlists.remove({'_id': wish_list_id, '_author_id': user_id})
+        self.mongo_client.users.update({'_id': user_id},{'$pull':{'wishlists':wish_list_id}})
+        delete_wishlist_from_all_users(self.mongo_client, wish_list_id)
 
 
-
-    def delete_wishlist_from_all_users(self, wishlist_id):
-        wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
-        for doc in self.mongo_client.users.find_all({'articles._id': wishlist_id}):
-            celery_app.self.delete_wishlist_from_user(self.mongo_client, wishlist_id, doc['_id'])
+def delete_wishlist_from_all_users(mongo_client, wishlist_id):
+    wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
+    mongo_client.users.update({'wishlists': wishlist_id}, {'$pull': {'wishilsts': wishlist_id}}, multi=True)
 
 
 

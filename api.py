@@ -2,10 +2,12 @@ import tornado
 from tornado.options import define, options
 from tornado import ioloop, web, httpserver
 
-from handlers.users_wishlists import UsersWishlistsHandler
-from handlers.users import UsersHandler
-from handlers.login import FacebookGraphLoginHandler
-from handlers.authentication import AuthenticationHandler
+from wl_api.handlers.users_wishlists import UsersWishlistsHandler
+from wl_api.handlers.users import UsersHandler
+from wl_api.handlers.login import FacebookGraphLoginHandler
+from wl_api.handlers.authentication import AuthenticationHandler
+from wl_api.handlers.articles import ArticlesHandler
+from wl_api.handlers.wishlists import WishlistsHandler
 import settings
 
 define("port", default=8080, help="run on the given port ", type=int)
@@ -20,8 +22,8 @@ class WishlistApi(web.Application):
                                      (r"/login/?", FacebookGraphLoginHandler),
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
-                                     #(r"/lists/([A-Za-z0-9_]*)?", ListsHandler),
-                                     #(r"/articles/([A-Za-z0-9_]*)?", ArticlesHandler)
+                                     (r"/articles/([A-Za-z0-9_]*)/?", ArticlesHandler),
+                                     (r"/wishlists/([A-Za-z0-9_]*)/?", WishlistsHandler)
                                  ],
                                  autoreload=True,
                                  **settings.settings

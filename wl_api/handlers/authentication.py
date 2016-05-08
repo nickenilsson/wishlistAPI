@@ -29,6 +29,7 @@ class AuthenticationHandler(BaseHandler):
                 user = existing_user
 
         self.set_secure_cookie('user', tornado.escape.json_encode(user.store))
+        user['wishlists'] = self.db_helper.get_users_wishlists(user['_id'])
         self.write({'response': {'user': user.store}})
         self.finish()
 
