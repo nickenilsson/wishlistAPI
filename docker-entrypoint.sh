@@ -1,3 +1,4 @@
-service redis-service start
+#!/bin/bash
+service redis-server start
 service rabbitmq-server start
-exec "@"
+exec "$@"

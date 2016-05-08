@@ -41,4 +41,4 @@ class WishlistArticlesHandler(BaseHandler):
 
         self.db_helper.add_article_to_list(article, user['_id'], wishlist_id)
 
-        self.finish()
+        self.respond_ok()

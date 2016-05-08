@@ -38,7 +38,6 @@ class UsersWishlistsHandler(BaseHandler):
         wlist['_author_id'] = user['_id']
         self.db_helper.create_wishlist(user_id=ObjectId(user['_id']), wishlist=wlist)
         self.respond_ok()
-        self.finish()
 
 
 

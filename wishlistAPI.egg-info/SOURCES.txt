@@ -5,6 +5,7 @@ wishlistAPI.egg-info/pbr.json
 wishlistAPI.egg-info/top_level.txt
 wl_api/__init__.py
 wl_api/api.py
+wl_api/celery_app.py
 wl_api/models.py
 wl_api/settings.py
 wl_api/handlers/__init__.py
@@ -13,7 +14,9 @@ wl_api/handlers/authentication.py
 wl_api/handlers/base.py
 wl_api/handlers/db_helper.py
 wl_api/handlers/login.py
+wl_api/handlers/search_images.py
 wl_api/handlers/users.py
 wl_api/handlers/users_wishlists.py
+wl_api/handlers/wishlists.py
 wl_api/handlers/wishlists_articles.py
 wl_api/models/__init__.py

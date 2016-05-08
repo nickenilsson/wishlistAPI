@@ -2,8 +2,8 @@ import tornado
 from tornado.options import define, options
 from tornado import ioloop, web, httpserver
 
-from handlers.users_wishlists import UsersWishlistsHandler
-from handlers.users import UsersHandler
+from wl_api.handlers.users_wishlists import UsersWishlistsHandler
+from wl_api.handlers.users import UsersHandler
 from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api.handlers.wishlists_articles import WishlistArticlesHandler
 from wl_api.handlers.articles import ArticlesHandler
