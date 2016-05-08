@@ -8,9 +8,10 @@ class ArticlesHandler(BaseHandler):
         article = self.get_article_from_args()
         article['_id'] = article_id
         self.db_helper.update_article(article)
-        self.finish()
+        self.respond_ok()
 
 
     @tornado.web.authenticated
     def delete(self, article_id):
+        self.respond_ok()
         pass

@@ -90,11 +90,6 @@ class DBHelper(object):
         return wish_list
 
 
-    def update_wishlist(self, wishlist):
-        wishlist_doc = self._fix_doc_before_insert(wishlist.store)
-        return self.mongo_client.wishlists.update_one({'_id':wishlist_doc['_id']}, {'$set': wishlist_doc})
-
-
     def add_article_to_list(self, article, user_id, wish_list_id):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
@@ -112,16 +107,23 @@ class DBHelper(object):
         return self.mongo_client.wishlists.update_one( {'articles._id':article['_id']},
                                                 {'$set':{'articles.$.{0}'.format(k):v for k, v in article.items()}})
 
+    def update_wishlist(self, wishlist_id, wishlist):
+        wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
+        wishlist.pop('articles')
+        wishlist = self._fix_doc_before_insert(wishlist)
+        return self.mongo_client.wishlists.update_one({'_id': wishlist_id}, {'$set':{k:v for k,v in wishlist.items()}})
 
     def delete_article(self, article_id):
         article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
         return self.mongo_client.wishlists.update_one({'articles._id': article_id}, {'$pull': {'_id': article_id}})
+
 
     def delete_wishlist(self, wish_list_id, user_id):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         self.mongo_client.wishlists.remove({'_id': wish_list_id, '_author_id': user_id})
         pass
+
 
     def delete_wishlist_from_all_users(self, wishlist_id):
 

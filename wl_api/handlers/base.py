@@ -19,6 +19,9 @@ class BaseHandler(web.RequestHandler):
             user = self.db_helper.get_user(cookie_user_fb['_id'])
             return user
 
+    def respond_ok(self):
+        self.write({'response': 'Ok!'})
+        self.finish()
 
     def display_error(self, status_code, message):
         self.set_status(status_code)

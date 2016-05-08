@@ -13,6 +13,9 @@ class UsersWishlistsHandler(BaseHandler):
         if user_id.lower() == 'me':
             user = self.get_current_user()
             user_id = user['_id']
+        else:
+            if not ObjectId.is_valid(user_id):
+                raise tornado.web.HTTPError(400, 'Invalid ObjectId')
 
         page = self.get_argument('page', 1)
         if page < 1:
@@ -34,6 +37,7 @@ class UsersWishlistsHandler(BaseHandler):
         wlist = self.get_wishlist_from_args()
         wlist['_author_id'] = user['_id']
         self.db_helper.create_wishlist(user_id=ObjectId(user['_id']), wishlist=wlist)
+        self.respond_ok()
         self.finish()
 
 
