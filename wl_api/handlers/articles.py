@@ -13,5 +13,5 @@ class ArticlesHandler(BaseHandler):
 
     @tornado.web.authenticated
     def delete(self, article_id):
+        self.db_helper.delete_article(article_id)
         self.respond_ok()
-        pass

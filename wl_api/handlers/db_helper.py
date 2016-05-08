@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 
 from wl_api.models import User, WishList
 import tornado.web
-
+from wl_api.celery_app import celery_app
 
 
 class DBHelper(object):
@@ -97,9 +97,8 @@ class DBHelper(object):
         article['_id'] = ObjectId()
 
         query = {'_id': wish_list_id, '_author_id':user_id}
-
-        result = self.mongo_client.wishlists.update_one(query, {'$push': {'articles': article}})
-        return result
+        self.mongo_client.wishlists.update_one(query, {'$push': {'articles': article}})
+        return str(article['_id'])
 
     #TODO: Make sure that only the author can edit articles
     def update_article(self, article):
@@ -122,9 +121,17 @@ class DBHelper(object):
         wish_list_id = ObjectId(wish_list_id) if not isinstance(wish_list_id, ObjectId) else wish_list_id
         user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
         self.mongo_client.wishlists.remove({'_id': wish_list_id, '_author_id': user_id})
-        pass
+
 
 
     def delete_wishlist_from_all_users(self, wishlist_id):
+        wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
+        for doc in self.mongo_client.users.find_all({'articles._id': wishlist_id}):
+            celery_app.self.delete_wishlist_from_user(self.mongo_client, wishlist_id, doc['_id'])
 
-        pass
+
+
+
+
+
+

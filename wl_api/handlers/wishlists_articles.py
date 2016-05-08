@@ -39,6 +39,5 @@ class WishlistArticlesHandler(BaseHandler):
         user = self.get_current_user()
         article = self.get_article_from_args()
 
-        self.db_helper.add_article_to_list(article, user['_id'], wishlist_id)
-
-        self.respond_ok()
+        article_id = self.db_helper.add_article_to_list(article, user['_id'], wishlist_id)
+        self.write({'response':{'message':'Article created successfully!', 'article_id': article_id}})
