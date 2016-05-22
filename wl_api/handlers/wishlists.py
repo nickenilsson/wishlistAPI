@@ -25,5 +25,6 @@ class WishlistsHandler(BaseHandler):
     def delete(self, wishlist_id):
         user = self.get_current_user()
         self.db_helper.delete_wishlist(wishlist_id, user['_id'])
+        self.respond_ok()
 
 
