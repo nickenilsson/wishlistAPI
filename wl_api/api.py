@@ -7,6 +7,7 @@ from wl_api.handlers.users import UsersHandler
 from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api.handlers.wishlists_articles import WishlistArticlesHandler
 from wl_api.handlers.articles import ArticlesHandler
+from wl_api.handlers.wishlists import WishlistsHandler
 from wl_api import settings
 from wl_api.handlers.search_images import SearchImagesHandler
 
@@ -23,7 +24,9 @@ class WishlistApi(web.Application):
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
                                      (r"/wishlists/([A-Za-z0-9_]*)/articles/?", WishlistArticlesHandler),
-                                     (r"/articles/([A-Za-z0-9_]*)/?", ArticlesHandler)
+                                     (r"/wishlists/([A-Za-z0-9_]*)/?", WishlistsHandler),
+                                     (r"/articles/([A-Za-z0-9_]*)/?", ArticlesHandler),
+
                                  ],
                                  autoreload=True,
                                  **settings.settings
