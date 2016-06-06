@@ -38,16 +38,18 @@ class BaseHandler(web.RequestHandler):
 
 
     def get_article_from_args(self):
-        name = self.get_argument('name')
-        description = self.get_argument('description', None)
-        image_url = self.get_argument('imageUrl', None)
-        article = Article(name=name, description=description, image_url=image_url)
-        return article
+        k_arguments = {}
+        k_arguments['name'] = self.get_argument('name')
+        k_arguments['description'] = self.get_argument('description', None)
+        k_arguments['image_url'] = self.get_argument('imageUrl', None)
+        k_arguments['state'] = self.get_argument('state', None)
+        return Article(**k_arguments)
+
 
 
     def get_wishlist_from_args(self):
-        name = self.get_argument('name')
-        description = self.get_argument('description', '')
-        image_url = self.get_argument('imageUrl', '')
-        wlist = WishList(name=name, description=description, image_url=image_url)
-        return wlist
+        k_arguments = {}
+        k_arguments['name'] = self.get_argument('name')
+        k_arguments['description'] = self.get_argument('description', '')
+        k_arguments['image_url'] = self.get_argument('imageUrl', '')
+        return WishList(**k_arguments)

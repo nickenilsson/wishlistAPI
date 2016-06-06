@@ -20,3 +20,5 @@ class ArticlesHandler(BaseHandler):
             raise tornado.web.HTTPError(400, 'Invalid ObjectId : {0}'.format(article_id))
         self.db_helper.delete_article(article_id)
         self.respond_ok()
+
+

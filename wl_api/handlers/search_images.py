@@ -11,7 +11,7 @@ class SearchImagesHandler(BaseHandler):
     GOOGLE_API_KEY = 'AIzaSyBdV1Emfi7Zd-T8_PQ1tr_Av7G4WuGpHOo'
     API_ID = '012147580588716782987:8xdixcfdasg'
     FIELDS = 'items(pagemap/cse_image)'
-    GOOGLE_SEARCH_URL_TEMPLATE = 'https://www.googleapis.com/customsearch/v1?key={api_key}&cx={api_id}&q={query}&fields={fields}'
+    GOOGLE_SEARCH_URL_TEMPLATE = 'https://www.googleapis.com/customsearch/v1?key={api_key}&cx={api_id}&q={query}&fields={fields}&searchType=image'
 
     @tornado.web.authenticated
     def get(self):

@@ -5,3 +5,7 @@ settings = {
     'login_url': '/users/authenticate'
 
 }
+
+ARTICLE_STATE_PURCHASED = 'PURCHASED'
+ARTICLE_STATE_AVALIABLE = 'AVAILABLE'
+ARTICLE_STATE_RESERVED = 'RESERVED'

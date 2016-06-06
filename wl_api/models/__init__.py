@@ -72,7 +72,8 @@ class Article(TransformedDict):
             'last_modified',
             'description',
             'image_url',
-            'status'
+            'state',
+            '_state_author_id'
         }
         super(Article, self).__init__(*args, **kwargs)
 

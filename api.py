@@ -8,6 +8,7 @@ from wl_api.handlers.login import FacebookGraphLoginHandler
 from wl_api.handlers.authentication import AuthenticationHandler
 from wl_api.handlers.articles import ArticlesHandler
 from wl_api.handlers.wishlists import WishlistsHandler
+from wl_api.handlers.articles_states import ArticlesStatesHandler
 import settings
 
 define("port", default=8080, help="run on the given port ", type=int)
@@ -23,7 +24,8 @@ class WishlistApi(web.Application):
                                      (r"/users/([A-Za-z0-9_]*)/?", UsersHandler),
                                      (r"/users/([A-Za-z0-9_]*)/wishlists/?", UsersWishlistsHandler),
                                      (r"/articles/([A-Za-z0-9_]*)/?", ArticlesHandler),
-                                     (r"/wishlists/([A-Za-z0-9_]*)/?", WishlistsHandler)
+                                     (r"/wishlists/([A-Za-z0-9_]*)/?", WishlistsHandler),
+                                     (r"/articles/([A-Za-z0-9_]*)/states/?", ArticlesStatesHandler)
                                  ],
                                  autoreload=True,
                                  **settings.settings

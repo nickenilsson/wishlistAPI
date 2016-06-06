@@ -7,10 +7,12 @@ import tornado.web
 from wl_api.celery_app import celery_app
 from redis import Redis
 from rq import Queue
+import settings
+
 
 class DBHelper(object):
 
-    def __init__(self, host='localhost'):
+    def __init__(self, host='mongo.aws'):
         self.mongo_client = MongoClient(host).wishlist
 
 
@@ -110,13 +112,39 @@ class DBHelper(object):
                                                 {'$set':{'articles.$.{0}'.format(k):v for k, v in article.items()}})
         if result.matched_count != 1:
             raise tornado.web.HTTPError(400, "No matching documents found")
+
         return result
+
+
+    def update_article_state(self, state, article_id, user_id):
+        user_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+        article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
+
+        result = self.mongo_client.wishlists.update_one({
+            'articles._id': article_id, '$or':[
+                {'articles._state_author_id': user_id},
+                {'articles._state_author_id': {'$exists': False}},
+                {'articles.state': settings.ARTICLE_STATE_AVALIABLE},
+                {'articles.state': {'$exists':False}}
+            ]
+        },
+        {
+            '$set':{
+                'articles.$.state': state,
+                'articles.$.state_author_id': user_id
+            }}
+        )
+        if result.matched_count != 1:
+            raise tornado.web.HTTPError(400, 'Operation not allowed. Make sure that the person modifying is the user that set the current state')
+        return result
+
 
     def update_wishlist(self, wishlist_id, wishlist):
         wishlist_id = ObjectId(wishlist_id) if not isinstance(wishlist_id, ObjectId) else wishlist_id
         wishlist.pop('articles')
         wishlist = self._fix_doc_before_insert(wishlist)
         return self.mongo_client.wishlists.update_one({'_id': wishlist_id}, {'$set':{k:v for k,v in wishlist.items()}})
+
 
     def delete_article(self, article_id):
         article_id = ObjectId(article_id) if not isinstance(article_id, ObjectId) else article_id
