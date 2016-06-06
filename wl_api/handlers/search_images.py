@@ -28,8 +28,9 @@ class SearchImagesHandler(BaseHandler):
                         fields= self.FIELDS
         )
 
+        print search_url
         response = requests.get(search_url)
-        
+
         response.raise_for_status()
         response_dict = json.loads(response.text)
 
