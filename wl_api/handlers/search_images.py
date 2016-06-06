@@ -29,7 +29,7 @@ class SearchImagesHandler(BaseHandler):
         )
 
         response = requests.get(search_url)
-
+        print response
         response.raise_for_status()
         response_dict = json.loads(response.text)
         import json
